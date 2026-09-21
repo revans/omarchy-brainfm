@@ -38,13 +38,9 @@ BarWidget {
   implicitWidth: barSize
   implicitHeight: barSize
 
-  Text {
+  BrainIcon {
     anchors.centerIn: parent
-    textFormat: Text.PlainText
-    text: "🧠"
     color: root.bar.barForeground
-    font.family: root.bar.fontFamily
-    font.pixelSize: Style.font.body
   }
 
   MouseArea {
@@ -238,7 +234,6 @@ BarWidget {
       Button {
         width: parent.width
         leftAlign: true
-        iconText: "🧠"
         text: "Open brain.fm"
         foreground: root.bar.foreground
         horizontalPadding: Style.spacing.controlPaddingX
