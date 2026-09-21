@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "rre.brainfm",
   "name": "Brain.fm",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": "Robert Evans",
   "description": "Bar icon for brain.fm: launch/focus the player and control playback via MPRIS",
   "kinds": [

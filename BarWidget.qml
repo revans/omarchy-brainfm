@@ -1,6 +1,5 @@
 import QtQuick
 import Quickshell
-import Quickshell.Wayland
 import Quickshell.Services.Pipewire
 import qs.Ui
 import qs.Commons
@@ -24,22 +23,6 @@ BarWidget {
   // omarchy-launch-or-focus-webapp ships with Omarchy itself, so this plugin
   // has no dependency outside its own folder.
   readonly property string openBrainFmCmd: "omarchy-launch-or-focus-webapp \"brain\\.fm\" \"https://my.brain.fm/\""
-
-  // Click-outside-to-close, implemented against the actual application
-  // window that gained focus rather than the shell's shared
-  // HyprlandFocusGrab (PopupCard's default "click" trigger mode). That
-  // shared grab treats screenshot tools grabbing input the same as a real
-  // outside click, closing the popup mid-screenshot. slurp/hyprpicker (the
-  // screenshot picker) don't register as toplevels — confirmed empirically,
-  // hyprctl's active window doesn't change while they're running — so
-  // watching ToplevelManager.activeToplevel closes on real window switches
-  // without being tripped by them.
-  Connections {
-    target: ToplevelManager
-    function onActiveToplevelChanged() {
-      if (root.popupOpen) root.popupOpen = false
-    }
-  }
 
   // Icon-only in the bar, same footprint every other icon widget uses.
   // Track name / artist / controls only appear in the popup on click.
@@ -79,7 +62,6 @@ BarWidget {
     bar: root.bar
     owner: root
     open: root.popupOpen
-    triggerMode: "hover"
     contentWidth: popup.fittedContentWidth(Style.space(320))
     contentHeight: popup.fittedContentHeight(column.implicitHeight)
 
