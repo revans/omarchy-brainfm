@@ -49,7 +49,3 @@ Pulls the latest version, shows you what changed, and reloads the bar automatica
 - [Omarchy](https://omarchy.org/)
 - A default browser that supports MPRIS media sessions (Chromium and Chromium-based browsers, which is what Omarchy ships by default)
 - A brain.fm account — you log in once in your normal browser like you always do; this plugin doesn't touch your credentials or session
-
-## Tip
-
-Want a clean screenshot of the popup open? Use `omarchy capture screenshot fullscreen save` (or `fullscreen copy` to skip straight to your clipboard) instead of the default drag-to-select shortcut — it doesn't require clicking anything, so it won't close the popup, same as it would with any other bar popup mid-selection.
