@@ -11,6 +11,7 @@ You start a brain.fm session to focus. Twenty minutes later it's buried under si
 ## Features
 
 - **One icon, always visible** — same footprint as your volume or network icon, not an extra always-on distraction in the bar
+- **Matches your theme** — renders in your bar's actual color, light or dark, like every icon next to it
 - **Real transport controls** — play, pause, skip, in a clean popup, not a browser tab you have to find first
 - **One-click launch or focus** — click brain.fm not open? It opens. Already open? You're taken straight to it
 - **A live level meter** instead of a broken album-art icon — animated, reacts to what's actually playing
