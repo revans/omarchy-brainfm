@@ -37,7 +37,15 @@ If you also have Omarchy's built-in Media widget (`omarchy.media`) enabled, you'
 omarchy plugin disable omarchy.media
 ```
 
+## Updating
+
+```
+omarchy plugin update rre.brainfm
+```
+
+Fetches from GitHub, shows you the diff, and fast-forwards on confirmation (`omarchy plugin update` with no id sweeps every git-managed plugin at once). This works because the installed copy is a real git checkout tracking this repo — nothing plugin-specific to configure.
+
 ## Notes
 
-- The popup uses `triggerMode: "hover"` rather than the shell's default click-outside-to-dismiss, specifically so that screenshot tools (which grab focus to let you select a region) don't close it mid-shot. The trade-off: clicking elsewhere on the desktop won't auto-close it — click the 🧠 icon again to close it.
+- The popup closes when you click another window, same as the shell's other bar popups — but not via the shell's shared "click outside closes it" mechanism (`PopupCard`'s default `triggerMode: "click"`), which uses a Hyprland focus grab that can't distinguish a real outside click from a screenshot tool grabbing input to let you select a region — so it was closing the popup mid-screenshot. Instead this plugin watches `Quickshell.Wayland.ToplevelManager.activeToplevel` directly and closes on real window switches. Confirmed empirically that Omarchy's screenshot picker (slurp/hyprpicker) never registers as a toplevel — Hyprland's active-window state doesn't change while it's up — so it doesn't trip this either. Net effect: click-outside-to-close works like every other bar popup, and it survives screenshots.
 - Nothing about this plugin is brain.fm-specific under the hood beyond the launch URL and window-matching pattern — it follows whatever Chromium reports as the active MPRIS player. If you're playing something else louder than brain.fm at the same time, that's what you'll see.
