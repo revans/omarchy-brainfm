@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "rre.brainfm",
+  "name": "Brain.fm",
+  "version": "1.0.0",
+  "author": "Robert Evans",
+  "description": "Bar icon for brain.fm: launch/focus the player and control playback via MPRIS",
+  "kinds": [
+    "service",
+    "bar-widget"
+  ],
+  "keepLoaded": true,
+  "entryPoints": {
+    "service": "Service.qml",
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Brain.fm",
+    "description": "Bar icon: click for brain.fm now-playing + controls",
+    "category": "Media",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}
