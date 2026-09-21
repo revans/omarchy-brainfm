@@ -1,5 +1,6 @@
 import QtQuick
 import Quickshell
+import Quickshell.Io
 import Quickshell.Services.Pipewire
 import qs.Ui
 import qs.Commons
@@ -17,6 +18,13 @@ BarWidget {
 
   property bool popupOpen: false
   function close() { popupOpen = false }
+
+  IpcHandler {
+    target: "rre.brainfm"
+    function open() { root.popupOpen = true }
+    function close() { root.popupOpen = false }
+    function toggle() { root.popupOpen = !root.popupOpen }
+  }
 
   // Focuses the brain.fm app window if one's already open (any window with
   // "brain.fm" in its title), otherwise launches it. No external script —
