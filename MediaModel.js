@@ -1,12 +1,9 @@
-// Chromium exposes one MPRIS player per browser process, shared by every tab
-// and --app window, so identity can't tell brain.fm apart from YouTube.
-// brain.fm's Media Session sets album and artist to "brain.fm"; match on that.
-function isBrainFm(player) {
-  if (!player) return false
-  var artist = player.trackArtist
-  if (Array.isArray(artist)) artist = artist.join(", ")
-  return String(player.trackAlbum || "").toLowerCase() === "brain.fm"
-    || String(artist || "").toLowerCase() === "brain.fm"
+// brain.fm runs in its own browser process, so its MPRIS dbus name ends in
+// "instance<pid>". Match that pid, not metadata: a browser shares one player
+// across every tab, so its metadata flips to YouTube the moment YouTube plays.
+function isBrainFm(player, pid) {
+  if (!player || !pid) return false
+  return String(player.dbusName || "").slice(-(".instance".length + String(pid).length)) === ".instance" + pid
 }
 
 function isProxyPlayer(player) {

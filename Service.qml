@@ -1,5 +1,6 @@
 import QtQuick
 import Quickshell
+import Quickshell.Io
 import Quickshell.Services.Mpris
 import Quickshell.Services.Pipewire
 import "MediaModel.js" as MediaModel
@@ -13,16 +14,37 @@ Item {
   property var pendingTrackOsd: null
   property int playSerial: 0
 
-  // Only brain.fm's media session: never pick up or control other players
-  // (e.g. a paused YouTube tab) when brain.fm isn't the active session.
+  // brain.fm runs in its own browser profile, so it is its own process and
+  // its own MPRIS player (dbus name "...instance<pid>"). A browser shares one
+  // player across all tabs, so metadata can't tell brain.fm from YouTube.
+  readonly property string profileDir: Quickshell.env("HOME") + "/.local/share/omarchy-brainfm/chromium"
+  property string brainFmPid: ""
+
+  // Only brain.fm's media session: never pick up or control other players.
   readonly property var players: {
     var all = Mpris.players ? Mpris.players.values : []
     var list = []
     for (var i = 0; i < all.length; i++) {
-      if (MediaModel.isBrainFm(all[i])) list.push(all[i])
+      if (MediaModel.isBrainFm(all[i], brainFmPid)) list.push(all[i])
     }
     return list
   }
+
+  // The oldest process started with our profile dir is the browser's main
+  // process (its children inherit the flag but start later).
+  Process {
+    id: findBrainFm
+    command: ["pgrep", "-of", "--", "--user-data-dir=" + root.profileDir + "( |$)"]
+    stdout: StdioCollector {
+      onStreamFinished: root.brainFmPid = text.trim()
+    }
+  }
+
+  Connections {
+    target: Mpris.players
+    function onValuesChanged() { findBrainFm.running = true }
+  }
+
   readonly property var nodes: Pipewire.nodes ? Pipewire.nodes.values : []
   readonly property var playbackStreams: {
     var list = []
@@ -442,7 +464,10 @@ Item {
   // syncPlayingOrder only depends on the set of players and each player's
   // isPlaying state: onPlayersChanged covers players appearing/disappearing,
   // and the Instantiator wires isPlayingChanged for each live player.
-  Component.onCompleted: root.syncPlayingOrder()
+  Component.onCompleted: {
+    findBrainFm.running = true
+    root.syncPlayingOrder()
+  }
   onPlayersChanged: root.syncPlayingOrder()
 
   Instantiator {

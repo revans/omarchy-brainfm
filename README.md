@@ -45,6 +45,8 @@ omarchy plugin update rre.brainfm
 
 Pulls the latest version, shows you what changed, and reloads the bar automatically — no reinstall, no manual file copying. Run `omarchy plugin update` with no id to update this and every other git-managed plugin you have installed at once.
 
+> **Upgrading from 1.3 or earlier:** brain.fm now opens in its own browser profile so YouTube and other tabs can't hijack the controls. The first launch asks you to log in to brain.fm once more.
+
 ## Requirements
 
 - [Omarchy](https://omarchy.org/)

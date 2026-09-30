@@ -27,12 +27,14 @@ BarWidget {
   }
 
   // Focuses the brain.fm app window if one's already open, otherwise launches
-  // it. Match the webapp's window class (e.g. "brave-my.brain.fm__-Default"),
+  // it. Match the webapp's window class (e.g. "chrome-my.brain.fm__-Default"),
   // not a bare "brain.fm": omarchy-launch-or-focus also matches window titles,
   // so any browser tab or terminal mentioning brain.fm would be focused instead.
-  // No external script — omarchy-launch-or-focus-webapp ships with Omarchy
-  // itself, so this plugin has no dependency outside its own folder.
-  readonly property string openBrainFmCmd: "omarchy-launch-or-focus-webapp \"my\\.brain\\.fm__\" \"https://my.brain.fm/\""
+  // The webapp runs in its own browser profile (--user-data-dir) so it is its
+  // own process, and therefore its own MPRIS player: a browser shares one
+  // player across every tab, so YouTube would otherwise hijack the controls.
+  // Service.qml finds that process by the same profile path.
+  readonly property string openBrainFmCmd: "omarchy-launch-or-focus-webapp \"my\\.brain\\.fm__\" \"https://my.brain.fm/\" --user-data-dir=" + (mediaService ? mediaService.profileDir : "")
 
   // Icon-only in the bar, same footprint every other icon widget uses.
   // Track name / artist / controls only appear in the popup on click.
