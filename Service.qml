@@ -1,6 +1,5 @@
 import QtQuick
 import Quickshell
-import Quickshell.Io
 import Quickshell.Services.Mpris
 import Quickshell.Services.Pipewire
 import "MediaModel.js" as MediaModel
@@ -14,7 +13,16 @@ Item {
   property var pendingTrackOsd: null
   property int playSerial: 0
 
-  readonly property var players: Mpris.players ? Mpris.players.values : []
+  // Only brain.fm's media session: never pick up or control other players
+  // (e.g. a paused YouTube tab) when brain.fm isn't the active session.
+  readonly property var players: {
+    var all = Mpris.players ? Mpris.players.values : []
+    var list = []
+    for (var i = 0; i < all.length; i++) {
+      if (MediaModel.isBrainFm(all[i])) list.push(all[i])
+    }
+    return list
+  }
   readonly property var nodes: Pipewire.nodes ? Pipewire.nodes.values : []
   readonly property var playbackStreams: {
     var list = []
@@ -454,70 +462,4 @@ Item {
   }
 
   PwObjectTracker { objects: root.playbackStreams }
-
-  function statusJson() {
-    var p = activePlayer
-    return JSON.stringify({
-      hasPlayer: p !== null,
-      hasMedia: root.hasMedia,
-      playing: p ? !!p.isPlaying : false,
-      identity: p ? (p.identity || "") : "",
-      desktopEntry: p ? (p.desktopEntry || "") : "",
-      title: p ? (p.trackTitle || "") : "",
-      artist: p ? (p.trackArtist || "") : "",
-      album: p && p.trackAlbum ? p.trackAlbum : "",
-      artUrl: p && p.trackArtUrl ? p.trackArtUrl : "",
-      canGoNext: p ? !!p.canGoNext : false,
-      canGoPrevious: p ? !!p.canGoPrevious : false,
-      canTogglePlaying: p ? !!p.canTogglePlaying : false
-    })
-  }
-
-  IpcHandler {
-    target: "media"
-
-    function status(): string {
-      return root.statusJson()
-    }
-
-    function playPause(): string {
-      return root.runAction("playPause", true) ? "ok" : "unhandled"
-    }
-
-    function next(): string {
-      return root.runAction("next", true) ? "ok" : "unhandled"
-    }
-
-    function previous(): string {
-      return root.runAction("previous", true) ? "ok" : "unhandled"
-    }
-
-    function play(): string {
-      return root.runAction("play", true) ? "ok" : "unhandled"
-    }
-
-    function pause(): string {
-      return root.runAction("pause", true) ? "ok" : "unhandled"
-    }
-
-    function sourceNext(): string {
-      return root.switchSource(1, false, true) ? "ok" : "unhandled"
-    }
-
-    function sourcePrevious(): string {
-      return root.switchSource(-1, false, true) ? "ok" : "unhandled"
-    }
-
-    function sourceSwitch(): string {
-      return root.switchSource(1, true, true) ? "ok" : "unhandled"
-    }
-
-    function sourceSwitchPrevious(): string {
-      return root.switchSource(-1, true, true) ? "ok" : "unhandled"
-    }
-
-    function ping(): string {
-      return "ok"
-    }
-  }
 }

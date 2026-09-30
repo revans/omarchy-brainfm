@@ -1,3 +1,14 @@
+// Chromium exposes one MPRIS player per browser process, shared by every tab
+// and --app window, so identity can't tell brain.fm apart from YouTube.
+// brain.fm's Media Session sets album and artist to "brain.fm"; match on that.
+function isBrainFm(player) {
+  if (!player) return false
+  var artist = player.trackArtist
+  if (Array.isArray(artist)) artist = artist.join(", ")
+  return String(player.trackAlbum || "").toLowerCase() === "brain.fm"
+    || String(artist || "").toLowerCase() === "brain.fm"
+}
+
 function isProxyPlayer(player) {
   var dbusName = String(player && player.dbusName || "").toLowerCase()
   var desktopEntry = String(player && player.desktopEntry || "").toLowerCase()
@@ -121,6 +132,7 @@ function osdMessage(player, fallback) {
 
 if (typeof module !== "undefined") {
   module.exports = {
+    isBrainFm: isBrainFm,
     isProxyPlayer: isProxyPlayer,
     hasMetadata: hasMetadata,
     hasTrackMetadata: hasTrackMetadata,
